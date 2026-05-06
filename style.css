@@ -135,6 +135,8 @@ img { display: block; max-width: 100%; }
   content: '';
   position: absolute;
   inset: 0;
+  will-change: transform;
+  animation: starsDrift 45s linear infinite;
   background-image:
     radial-gradient(1px 1px at 20% 30%, #fff 0%, transparent 100%),
     radial-gradient(1px 1px at 40% 15%, #fff 0%, transparent 100%),
@@ -629,6 +631,12 @@ footer {
 @keyframes wordReveal {
   from { opacity: 0; transform: translateY(40px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes starsDrift {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(-2%, 1.5%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 /* Fade-in on scroll */
