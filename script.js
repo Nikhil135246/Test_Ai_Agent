@@ -247,4 +247,114 @@
     glow.style.top  = e.clientY + 'px';
   }));
 
+  /* ══════════════════════════════════════════════════════════════
+     9. INTERACTIVE CONSTELLATIONS
+     ══════════════════════════════════════════════════════════════ */
+  class Constellation {
+    constructor(canvas, numStars = 100, color = 'rgba(255, 255, 255, 0.8)') {
+      this.canvas = canvas;
+      this.ctx = this.canvas.getContext('2d');
+      this.numStars = numStars;
+      this.color = color;
+      this.stars = [];
+      this.mouse = { x: undefined, y: undefined, radius: 120 };
+      this.resizeObserver = new ResizeObserver(() => this.init());
+      this.resizeObserver.observe(this.canvas.parentElement);
+      this.init();
+      this.animate();
+    }
+
+    init() {
+      this.canvas.width = this.canvas.parentElement.clientWidth;
+      this.canvas.height = this.canvas.parentElement.clientHeight;
+      this.stars = [];
+      for (let i = 0; i < this.numStars; i++) {
+        this.stars.push({
+          x: Math.random() * this.canvas.width,
+          y: Math.random() * this.canvas.height,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          radius: Math.random() * 1.5 + 0.5,
+        });
+      }
+    }
+
+    draw() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.fillStyle = this.color;
+      this.stars.forEach(star => {
+        this.ctx.beginPath();
+        this.ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        this.ctx.fill();
+      });
+      this.drawLines();
+    }
+
+    drawLines() {
+      this.ctx.strokeStyle = this.color;
+      this.ctx.lineWidth = 0.2;
+      for (let i = 0; i < this.stars.length; i++) {
+        for (let j = i + 1; j < this.stars.length; j++) {
+          const dist = Math.hypot(this.stars[i].x - this.stars[j].x, this.stars[i].y - this.stars[j].y);
+          if (dist < 100) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.stars[i].x, this.stars[i].y);
+            this.ctx.lineTo(this.stars[j].x, this.stars[j].y);
+            this.ctx.stroke();
+          }
+        }
+      }
+    }
+
+    update() {
+      this.stars.forEach(star => {
+        star.x += star.vx;
+        star.y += star.vy;
+
+        if (star.x < 0 || star.x > this.canvas.width) star.vx *= -1;
+        if (star.y < 0 || star.y > this.canvas.height) star.vy *= -1;
+
+        // Mouse interaction
+        if (this.mouse.x !== undefined) {
+          const dist = Math.hypot(star.x - this.mouse.x, star.y - this.mouse.y);
+          if (dist < this.mouse.radius) {
+            const force = (this.mouse.radius - dist) / this.mouse.radius;
+            star.x -= (this.mouse.x - star.x) * force * 0.05;
+            star.y -= (this.mouse.y - star.y) * force * 0.05;
+          }
+        }
+      });
+    }
+
+    animate() {
+      this.draw();
+      this.update();
+      requestAnimationFrame(() => this.animate());
+    }
+
+    handleMouseMove(e) {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.x = e.clientX - rect.left;
+      this.mouse.y = e.clientY - rect.top;
+    }
+    
+    handleMouseLeave() {
+        this.mouse.x = undefined;
+        this.mouse.y = undefined;
+    }
+  }
+
+  const heroCanvas = qs('#constellation-canvas-hero');
+  if (heroCanvas) {
+    const constellationHero = new Constellation(heroCanvas, 120, 'rgba(173, 216, 230, 0.7)');
+    heroCanvas.parentElement.addEventListener('mousemove', (e) => constellationHero.handleMouseMove(e));
+    heroCanvas.parentElement.addEventListener('mouseleave', () => constellationHero.handleMouseLeave());
+  }
+
+  const spaceCanvas = qs('#constellation-canvas-space');
+  if (spaceCanvas) {
+    const constellationSpace = new Constellation(spaceCanvas, 150, 'rgba(255, 220, 185, 0.7)');
+    spaceCanvas.parentElement.addEventListener('mousemove', (e) => constellationSpace.handleMouseMove(e));
+    spaceCanvas.parentElement.addEventListener('mouseleave', () => constellationSpace.handleMouseLeave());
+  }
 })();

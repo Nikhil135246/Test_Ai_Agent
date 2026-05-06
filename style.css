@@ -811,3 +811,12 @@ footer {
 
   .forest-section p { margin: 0 auto 3rem; }
 }
+
+/* ─── Constellation Canvas ─────────────────────────────────── */
+.constellation-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.6;
+  mix-blend-mode: screen;
+}
