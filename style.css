@@ -135,6 +135,8 @@ img { display: block; max-width: 100%; }
   content: '';
   position: absolute;
   inset: 0;
+  will-change: transform;
+  animation: starsDrift 45s linear infinite;
   background-image:
     radial-gradient(1px 1px at 20% 30%, #fff 0%, transparent 100%),
     radial-gradient(1px 1px at 40% 15%, #fff 0%, transparent 100%),
@@ -235,6 +237,60 @@ img { display: block; max-width: 100%; }
 @keyframes waveAnim {
   0%, 100% { transform: translateX(0) scaleY(1); }
   50%       { transform: translateX(30px) scaleY(1.1); }
+}
+
+/* ─── SPACE layers ────────────────────────────────────────────── */
+.space {
+  background: radial-gradient(ellipse 140% 120% at 50% 120%, #070b16 0%, #04070f 60%, #02040a 100%);
+}
+
+#space-bg {
+  background: radial-gradient(circle at 20% 30%, rgba(120, 180, 255, 0.12) 0%, transparent 35%),
+              radial-gradient(circle at 80% 20%, rgba(255, 180, 200, 0.1) 0%, transparent 35%),
+              radial-gradient(circle at 60% 70%, rgba(100, 255, 220, 0.08) 0%, transparent 40%),
+              radial-gradient(circle at 30% 80%, rgba(255, 220, 120, 0.06) 0%, transparent 38%);
+}
+
+#space-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 40%, rgba(255,255,255,0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 60% 30%, rgba(255,255,255,0.9) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 55%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 75%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(2px 2px at 15% 85%, rgba(255,255,255,0.5) 0%, transparent 100%);
+  animation: starsDrift 55s linear infinite;
+}
+
+#space-nebula {
+  background:
+    radial-gradient(ellipse 60% 35% at 20% 60%, rgba(120, 130, 255, 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 30% at 70% 40%, rgba(255, 120, 200, 0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 25% at 55% 75%, rgba(100, 255, 200, 0.14) 0%, transparent 70%);
+  mix-blend-mode: screen;
+}
+
+#space-planet {
+  background:
+    radial-gradient(circle at 70% 45%, #bcd4ff 0%, #7c93d4 40%, #3a4672 70%, transparent 72%),
+    radial-gradient(circle at 70% 45%, rgba(255, 255, 255, 0.3) 0%, transparent 35%);
+}
+
+#space-ring {
+  background:
+    radial-gradient(ellipse 55% 18% at 70% 50%, rgba(200, 230, 255, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 22% at 70% 50%, rgba(120, 160, 220, 0.25) 0%, transparent 60%);
+  transform: rotate(-8deg);
+  opacity: 0.85;
+}
+
+#space-fg {
+  background:
+    radial-gradient(ellipse 45% 20% at 15% 105%, #0b101f 40%, transparent 65%),
+    radial-gradient(ellipse 55% 25% at 85% 110%, #0a0f1a 40%, transparent 65%);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -629,6 +685,12 @@ footer {
 @keyframes wordReveal {
   from { opacity: 0; transform: translateY(40px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes starsDrift {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(-2%, 1.5%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 /* Fade-in on scroll */

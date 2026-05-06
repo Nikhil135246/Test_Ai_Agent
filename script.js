@@ -72,6 +72,13 @@
     /* OCEAN */
     { el: qs('#ocean-bg'),     speed: 0.45  },
 
+    /* SPACE */
+    { el: qs('#space-bg'),     speed: 0.5   },
+    { el: qs('#space-nebula'), speed: 0.3   },
+    { el: qs('#space-planet'), speed: 0.2   },
+    { el: qs('#space-ring'),   speed: 0.15  },
+    { el: qs('#space-fg'),     speed: 0.1   },
+
     /* FOREST card-bg */
     { el: qs('.parallax-card-bg'), speed: 0.25 },
   ].filter(item => item.el); // guard against missing nodes
