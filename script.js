@@ -83,32 +83,66 @@
     { el: qs('.parallax-card-bg'), speed: 0.25 },
   ].filter(item => item.el); // guard against missing nodes
 
-  function updateParallax() {
-    const scrollY = window.scrollY;
+  // Smooth parallax using interpolation (lerp) so transforms don't jump.
+  // Each layer gets a target and current value; scroll updates target, rAF loop eases current -> target.
+  parallaxLayers.forEach(layer => {
+    layer._target = 0;
+    layer._current = 0;
+  });
 
-    parallaxLayers.forEach(({ el, speed }) => {
+  function setParallaxTargets() {
+    const scrollY = window.scrollY;
+    parallaxLayers.forEach(layer => {
+      const { el, speed } = layer;
       const section = el.closest('section') || el.parentElement;
       const sectionTop = section ? section.offsetTop : 0;
-      const offset = (scrollY - sectionTop) * speed;
-      el.style.transform = `translate3d(0, ${offset}px, 0)`;
+      layer._target = (scrollY - sectionTop) * speed;
     });
 
-    /* Wave layers extra sway */
-    const wave1 = qs('#wave1');
-    const wave2 = qs('#wave2');
-    if (wave1 && wave2) {
-      const oceanSection = qs('#ocean');
-      if (oceanSection) {
-        const oTop  = oceanSection.offsetTop;
-        const delta = (scrollY - oTop) * 0.12;
-        wave1.style.transform = `translate3d(${delta}px, 0, 0)`;
-        wave2.style.transform = `translate3d(${-delta * 0.7}px, 0, 0)`;
-      }
+    // update raw wave targets as well
+    const oceanSection = qs('#ocean');
+    if (oceanSection) {
+      const oTop = oceanSection.offsetTop;
+      const delta = (scrollY - oTop) * 0.12;
+      const wave1 = qs('#wave1');
+      const wave2 = qs('#wave2');
+      if (wave1) wave1._target = delta;
+      if (wave2) wave2._target = -delta * 0.7;
     }
   }
 
-  window.addEventListener('scroll', rafThrottle(updateParallax), { passive: true });
-  updateParallax();
+  // Throttle target updates to rAF-friendly ticks
+  window.addEventListener('scroll', rafThrottle(setParallaxTargets), { passive: true });
+  setParallaxTargets();
+
+  function animateParallax() {
+    // ease factor (0..1) - adjust for more/less smoothing
+    const ease = 0.12;
+    parallaxLayers.forEach(layer => {
+      layer._current += (layer._target - layer._current) * ease;
+      layer.el.style.transform = `translate3d(0, ${layer._current}px, 0)`;
+    });
+
+    // Wave smoothing
+    const wave1 = qs('#wave1');
+    const wave2 = qs('#wave2');
+    if (wave1) {
+      wave1._current = wave1._current || 0;
+      wave1._target = wave1._target || 0;
+      wave1._current += (wave1._target - wave1._current) * ease;
+      wave1.style.transform = `translate3d(${wave1._current}px, 0, 0)`;
+    }
+    if (wave2) {
+      wave2._current = wave2._current || 0;
+      wave2._target = wave2._target || 0;
+      wave2._current += (wave2._target - wave2._current) * ease;
+      wave2.style.transform = `translate3d(${wave2._current}px, 0, 0)`;
+    }
+
+    requestAnimationFrame(animateParallax);
+  }
+
+  requestAnimationFrame(animateParallax);
 
   /* ══════════════════════════════════════════════════════════════
      3. INTERSECTION OBSERVER — fade-in on scroll
