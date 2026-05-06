@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Into the Wild — Parallax Journey</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-logo">🌿 Into the Wild</div>
+    <ul class="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#forest">Forest</a></li>
+      <li><a href="#mountain">Mountains</a></li>
+      <li><a href="#ocean">Ocean</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">☰</button>
+  </nav>
+
+  <!-- ─── HERO ─────────────────────────────────────────────────── -->
+  <section id="hero" class="parallax-section hero">
+    <div class="parallax-bg" id="hero-bg"></div>
+    <div class="parallax-mid" id="hero-mid"></div>
+    <div class="parallax-fg" id="hero-fg"></div>
+    <div class="section-content hero-content">
+      <p class="eyebrow">Scroll to explore</p>
+      <h1 class="hero-title">
+        <span class="word" data-delay="0">Into</span>
+        <span class="word" data-delay="150">the</span>
+        <span class="word accent" data-delay="300">Wild</span>
+      </h1>
+      <p class="hero-sub">A visual journey through Earth's most breathtaking landscapes</p>
+      <a href="#forest" class="btn btn-primary">Begin the Journey</a>
+    </div>
+    <div class="scroll-indicator">
+      <span></span>
+    </div>
+  </section>
+
+  <!-- ─── FOREST ───────────────────────────────────────────────── -->
+  <section id="forest" class="content-section forest-section">
+    <div class="parallax-card-bg" data-parallax-speed="0.3"></div>
+    <div class="section-content fade-in">
+      <div class="label">Chapter 01</div>
+      <h2>Ancient Forests</h2>
+      <p>
+        Step beneath towering canopies where sunlight fractures into
+        a thousand golden shards. Ancient trees stand as silent sentinels,
+        their roots weaving stories older than memory itself.
+      </p>
+      <div class="stat-row">
+        <div class="stat"><span class="stat-num" data-target="3">0</span><span>T</span> <small>Trees on Earth</small></div>
+        <div class="stat"><span class="stat-num" data-target="80">0</span><span>%</span> <small>Land species live here</small></div>
+        <div class="stat"><span class="stat-num" data-target="400">0</span><span>m</span> <small>Tallest tree height</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MOUNTAIN ─────────────────────────────────────────────── -->
+  <section id="mountain" class="parallax-section mountain">
+    <div class="parallax-bg" id="mountain-bg"></div>
+    <div class="parallax-mid" id="mountain-mid"></div>
+    <div class="section-content fade-in">
+      <div class="label">Chapter 02</div>
+      <h2 class="section-title">The Peaks</h2>
+      <p class="section-desc">
+        Where stone meets sky and silence speaks louder than any voice.
+        The mountains remind us how small, and yet how significant, we truly are.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── FEATURE CARDS ────────────────────────────────────────── -->
+  <section class="cards-section">
+    <div class="cards-grid fade-in">
+      <div class="card" data-tilt>
+        <div class="card-icon">🌲</div>
+        <h3>Temperate Rainforest</h3>
+        <p>Lush moss carpets and towering douglas firs create a cathedral of green.</p>
+      </div>
+      <div class="card" data-tilt>
+        <div class="card-icon">🏔️</div>
+        <h3>Alpine Summits</h3>
+        <p>Crisp air and 360° panoramas reward those bold enough to climb.</p>
+      </div>
+      <div class="card" data-tilt>
+        <div class="card-icon">🌊</div>
+        <h3>Coastal Cliffs</h3>
+        <p>Waves sculpt ancient rock into dramatic arches and sea caves.</p>
+      </div>
+      <div class="card" data-tilt>
+        <div class="card-icon">🦅</div>
+        <h3>Wildlife</h3>
+        <p>Thousands of species thrive in habitats untouched by time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── OCEAN ────────────────────────────────────────────────── -->
+  <section id="ocean" class="parallax-section ocean">
+    <div class="parallax-bg" id="ocean-bg"></div>
+    <div class="wave-layer" id="wave1"></div>
+    <div class="wave-layer" id="wave2"></div>
+    <div class="section-content fade-in">
+      <div class="label">Chapter 03</div>
+      <h2 class="section-title">The Deep Blue</h2>
+      <p class="section-desc">
+        The ocean covers 71% of our planet and holds mysteries we have barely begun to unravel.
+        Dive beneath the surface and discover another world entirely.
+      </p>
+      <a href="#contact" class="btn btn-outline">Explore More</a>
+    </div>
+  </section>
+
+  <!-- ─── QUOTE ─────────────────────────────────────────────────── -->
+  <section class="quote-section fade-in">
+    <blockquote>
+      <p>
+        "In every walk with nature, one receives far more than he seeks."
+      </p>
+      <cite>— John Muir</cite>
+    </blockquote>
+  </section>
+
+  <!-- ─── CONTACT ──────────────────────────────────────────────── -->
+  <section id="contact" class="contact-section fade-in">
+    <div class="section-content">
+      <div class="label">Get in Touch</div>
+      <h2>Start Your Adventure</h2>
+      <p>Ready to explore the wild? Let's plan your journey together.</p>
+      <form class="contact-form" id="contactForm">
+        <div class="form-row">
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Your Email" required />
+        </div>
+        <textarea rows="4" placeholder="Tell us about your dream destination…" required></textarea>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+      </form>
+      <p class="form-success" id="formSuccess">✅ Message sent! We'll be in touch soon.</p>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ───────────────────────────────────────────────── -->
+  <footer>
+    <p>🌿 Into the Wild &nbsp;|&nbsp; Made with ♥ for nature lovers</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
