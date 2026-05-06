@@ -293,6 +293,75 @@ img { display: block; max-width: 100%; }
     radial-gradient(ellipse 55% 25% at 85% 110%, #0a0f1a 40%, transparent 65%);
 }
 
+/* ─── Shooting Stars ────────────────────────────────────────── */
+.shooting-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px #fff;
+  animation: animate-star 3s linear infinite;
+  z-index: 5;
+}
+.shooting-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg, #fff, transparent);
+}
+
+@keyframes animate-star {
+  0% {
+    transform: rotate(315deg) translateX(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(315deg) translateX(-1000px);
+    opacity: 0;
+  }
+}
+
+.shooting-star:nth-child(1) {
+  top: 0;
+  right: 0;
+  left: initial;
+  animation-delay: 0;
+  animation-duration: 1s;
+}
+
+.shooting-star:nth-child(2) {
+  top: 0;
+  right: 80px;
+  left: initial;
+  animation-delay: 0.2s;
+  animation-duration: 3s;
+}
+
+.space .shooting-star:nth-child(3) {
+  top: 80px;
+  right: 0px;
+  left: initial;
+  animation-delay: 1.4s;
+  animation-duration: 2s;
+}
+
+.space .shooting-star:nth-child(4) {
+  top: 0;
+  right: 180px;
+  left: initial;
+  animation-delay: 1.8s;
+  animation-duration: 1.5s;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    SECTION CONTENT (overlay text)
    ═══════════════════════════════════════════════════════════════ */
@@ -741,4 +810,13 @@ footer {
   .forest-section .section-content { text-align: center; }
 
   .forest-section p { margin: 0 auto 3rem; }
+}
+
+/* ─── Constellation Canvas ─────────────────────────────────── */
+.constellation-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.6;
+  mix-blend-mode: screen;
 }
