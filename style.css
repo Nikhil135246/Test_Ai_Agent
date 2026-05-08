@@ -1,13 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════
-   Into the Wild — Parallax Website
+   Into the Wild — Parallax Website (Updated)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ─── Custom properties ──────────────────────────────────────── */
 :root {
   --clr-bg:        #0a0f0d;
   --clr-surface:   #111a14;
-  --clr-accent:    #4ade80;   /* vivid green */
-  --clr-accent2:   #22d3ee;   /* cyan */
+  --clr-accent:    #4ade80;
+  --clr-accent2:   #22d3ee;
   --clr-gold:      #fbbf24;
   --clr-text:      #e2efe6;
   --clr-muted:     #8fb89a;
@@ -112,31 +112,39 @@ img { display: block; max-width: 100%; }
   overflow: hidden;
 }
 
-/* Soften hard edges between full-screen sections */
+/* Seamless top/bottom soft edges for all parallax sections */
 .parallax-section::before,
 .parallax-section::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  height: 90px;
+  height: 120px;
   pointer-events: none;
   z-index: 9;
 }
 
 .parallax-section::before {
   top: 0;
-  background: linear-gradient(to bottom, rgba(10,15,13,0.85), rgba(10,15,13,0.45) 35%, rgba(10,15,13,0) 100%);
+  background: linear-gradient(to bottom,
+    rgba(10,15,13,0.9) 0%,
+    rgba(10,15,13,0.5) 40%,
+    transparent 100%);
 }
 
 .parallax-section::after {
   bottom: 0;
-  background: linear-gradient(to top, rgba(10,15,13,0.85), rgba(10,15,13,0.45) 35%, rgba(10,15,13,0) 100%);
+  background: linear-gradient(to top,
+    rgba(10,15,13,0.9) 0%,
+    rgba(10,15,13,0.5) 40%,
+    transparent 100%);
 }
 
-/* add a subtle inner fade so the cut between sections is less harsh */
+/* Inner vignette for depth */
 .parallax-section {
-  box-shadow: inset 0 60px 80px -60px rgba(0,0,0,0.6), inset 0 -60px 80px -60px rgba(0,0,0,0.6);
+  box-shadow:
+    inset 0 80px 100px -80px rgba(0,0,0,0.7),
+    inset 0 -80px 100px -80px rgba(0,0,0,0.7);
 }
 
 /* Parallax layer base */
@@ -144,7 +152,7 @@ img { display: block; max-width: 100%; }
 .parallax-mid,
 .parallax-fg {
   position: absolute;
-  inset: -30% 0;           /* extra height so movement doesn't reveal gaps */
+  inset: -40% 0;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -191,13 +199,56 @@ img { display: block; max-width: 100%; }
 /* Ground silhouette */
 #hero-fg {
   background:
-    /* Left mountain */
     radial-gradient(ellipse 40% 60% at -5% 100%, #0d2b1a 40%, transparent 70%),
-    /* Right mountain */
     radial-gradient(ellipse 50% 55% at 108% 100%, #071a0e 40%, transparent 70%),
-    /* Centre hill */
     radial-gradient(ellipse 55% 35% at 50% 108%, #0f2a18 40%, transparent 65%);
   opacity: 0.95;
+}
+
+/* ─── FOREST layers ───────────────────────────────────────────── */
+#forest-bg {
+  background: linear-gradient(180deg,
+    #040d07 0%,
+    #081a0c 30%,
+    #0d2b1a 65%,
+    #060f09 100%);
+}
+
+#forest-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1px 1px at 15% 20%, rgba(180,255,200,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 35% 35%, rgba(180,255,200,0.2) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 15%, rgba(180,255,200,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 40%, rgba(180,255,200,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 25%, rgba(180,255,200,0.15) 0%, transparent 100%);
+  animation: fireflyDrift 20s ease-in-out infinite;
+}
+
+#forest-mid {
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 85%, rgba(74, 222, 128, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(74, 222, 128, 0.1) 0%, transparent 60%);
+}
+
+#forest-fg {
+  background:
+    radial-gradient(ellipse 15% 60% at 5% 100%, #0a1f0d 50%, transparent 70%),
+    radial-gradient(ellipse 20% 70% at 20% 110%, #0d2b1a 40%, transparent 65%),
+    radial-gradient(ellipse 25% 55% at 40% 105%, #0a1f0d 45%, transparent 60%),
+    radial-gradient(ellipse 18% 65% at 60% 110%, #0d2b1a 40%, transparent 65%),
+    radial-gradient(ellipse 22% 60% at 80% 105%, #0a1f0d 45%, transparent 60%),
+    radial-gradient(ellipse 15% 50% at 95% 100%, #0d2b1a 50%, transparent 70%);
+  opacity: 0.9;
+}
+
+@keyframes fireflyDrift {
+  0%, 100% { opacity: 0.6; transform: translate3d(0, 0, 0); }
+  25% { opacity: 1; transform: translate3d(2px, -3px, 0); }
+  50% { opacity: 0.8; transform: translate3d(-1px, 2px, 0); }
+  75% { opacity: 1; transform: translate3d(3px, 1px, 0); }
 }
 
 /* ─── MOUNTAIN layers ─────────────────────────────────────────── */
@@ -214,11 +265,9 @@ img { display: block; max-width: 100%; }
   position: absolute;
   inset: 0;
   background:
-    /* Snow caps */
     radial-gradient(ellipse 25% 20% at 25% 55%, rgba(200,230,255,0.35) 0%, transparent 60%),
     radial-gradient(ellipse 30% 25% at 65% 50%, rgba(200,230,255,0.3) 0%, transparent 60%),
     radial-gradient(ellipse 18% 15% at 45% 60%, rgba(200,230,255,0.25) 0%, transparent 60%),
-    /* Mountain body */
     radial-gradient(ellipse 45% 50% at 25% 105%, #1a3050 40%, transparent 65%),
     radial-gradient(ellipse 55% 55% at 65% 110%, #152640 40%, transparent 65%),
     radial-gradient(ellipse 35% 40% at 48% 108%, #1f3858 40%, transparent 65%);
@@ -248,6 +297,11 @@ img { display: block; max-width: 100%; }
     radial-gradient(ellipse 80% 40% at 20% 80%, rgba(74, 222, 128, 0.05) 0%, transparent 60%);
 }
 
+#ocean-mid {
+  background:
+    radial-gradient(ellipse 100% 30% at 50% 100%, rgba(34, 211, 238, 0.06) 0%, transparent 60%);
+}
+
 .wave-layer {
   position: absolute;
   left: -5%;
@@ -264,6 +318,20 @@ img { display: block; max-width: 100%; }
 @keyframes waveAnim {
   0%, 100% { transform: translateX(0) scaleY(1); }
   50%       { transform: translateX(30px) scaleY(1.1); }
+}
+
+/* Sea creatures / particles */
+#ocean-fg {
+  background:
+    radial-gradient(2px 2px at 20% 70%, rgba(255,220,180,0.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 70% 60%, rgba(255,220,180,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 75%, rgba(180,255,255,0.2) 0%, transparent 100%);
+  animation: seaGlow 6s ease-in-out infinite;
+}
+
+@keyframes seaGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 /* ─── SPACE layers ────────────────────────────────────────────── */
@@ -388,6 +456,20 @@ img { display: block; max-width: 100%; }
   animation-delay: 1.8s;
   animation-duration: 1.5s;
 }
+
+/* ─── Section-to-Section Seam Overlays ─────────────────────── */
+.section-seam-top,
+.section-seam-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 150px;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.section-seam-top { top: 0; }
+.section-seam-bottom { bottom: 0; }
 
 /* ═══════════════════════════════════════════════════════════════
    SECTION CONTENT (overlay text)
@@ -618,8 +700,24 @@ img { display: block; max-width: 100%; }
    CARDS SECTION
    ═══════════════════════════════════════════════════════════════ */
 .cards-section {
-  background: var(--clr-surface);
+  position: relative;
   padding: 6rem 2rem;
+  overflow: hidden;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Parallax bg layers for cards */
+.cards-bg {
+  position: absolute;
+  inset: -20% 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 40%, rgba(74, 222, 128, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 70% 60%, rgba(34, 211, 238, 0.04) 0%, transparent 60%);
+  will-change: transform;
+  z-index: 0;
 }
 
 .cards-grid {
@@ -628,6 +726,8 @@ img { display: block; max-width: 100%; }
   gap: 1.5rem;
   max-width: 1100px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .card {
@@ -637,6 +737,22 @@ img { display: block; max-width: 100%; }
   padding: 2rem 1.75rem;
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--clr-accent), var(--clr-accent2));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover::before {
+  opacity: 1;
 }
 
 .card:hover {
@@ -667,9 +783,28 @@ img { display: block; max-width: 100%; }
    QUOTE SECTION
    ═══════════════════════════════════════════════════════════════ */
 .quote-section {
-  padding: 8rem 2rem;
+  position: relative;
+  padding: 10rem 2rem;
   text-align: center;
-  background: linear-gradient(180deg, #040d07 0%, #060f09 100%);
+  overflow: hidden;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quote-bg {
+  position: absolute;
+  inset: -20% 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(74, 222, 128, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 70%, rgba(34, 211, 238, 0.03) 0%, transparent 60%);
+  will-change: transform;
+}
+
+.quote-section blockquote {
+  position: relative;
+  z-index: 1;
 }
 
 blockquote p {
@@ -696,8 +831,23 @@ blockquote cite {
    CONTACT SECTION
    ═══════════════════════════════════════════════════════════════ */
 .contact-section {
-  background: var(--clr-surface);
+  position: relative;
   padding: 8rem 2rem;
+  overflow: hidden;
+}
+
+.contact-bg {
+  position: absolute;
+  inset: -20% 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 30%, rgba(74, 222, 128, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 70% 70%, rgba(34, 211, 238, 0.04) 0%, transparent 60%);
+  will-change: transform;
+}
+
+.contact-section .section-content {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-section h2 {
@@ -768,6 +918,7 @@ footer {
   font-size: 0.875rem;
   color: var(--clr-muted);
   border-top: 1px solid rgba(74, 222, 128, 0.1);
+  position: relative;
 }
 
 /* ═══════════════════════════════════════════════════════════════

@@ -45,13 +45,15 @@
     </div>
   </section>
 
-  <!-- ─── FOREST ───────────────────────────────────────────────── -->
-  <section id="forest" class="content-section forest-section">
-    <div class="parallax-card-bg" data-parallax-speed="0.3"></div>
+  <!-- ─── FOREST (now a parallax section) ─────────────────────── -->
+  <section id="forest" class="parallax-section forest">
+    <div class="parallax-bg" id="forest-bg"></div>
+    <div class="parallax-mid" id="forest-mid"></div>
+    <div class="parallax-fg" id="forest-fg"></div>
     <div class="section-content fade-in">
       <div class="label">Chapter 01</div>
-      <h2>Ancient Forests</h2>
-      <p>
+      <h2 class="section-title">Ancient Forests</h2>
+      <p class="section-desc">
         Step beneath towering canopies where sunlight fractures into
         a thousand golden shards. Ancient trees stand as silent sentinels,
         their roots weaving stories older than memory itself.
@@ -80,6 +82,7 @@
 
   <!-- ─── FEATURE CARDS ────────────────────────────────────────── -->
   <section class="cards-section">
+    <div class="cards-bg parallax-bg-layer" id="cards-bg"></div>
     <div class="cards-grid fade-in">
       <div class="card" data-tilt>
         <div class="card-icon">🌲</div>
@@ -107,6 +110,8 @@
   <!-- ─── OCEAN ────────────────────────────────────────────────── -->
   <section id="ocean" class="parallax-section ocean">
     <div class="parallax-bg" id="ocean-bg"></div>
+    <div class="parallax-mid" id="ocean-mid"></div>
+    <div class="parallax-fg" id="ocean-fg"></div>
     <div class="wave-layer" id="wave1"></div>
     <div class="wave-layer" id="wave2"></div>
     <div class="section-content fade-in">
@@ -143,8 +148,9 @@
   </section>
 
   <!-- ─── QUOTE ─────────────────────────────────────────────────── -->
-  <section class="quote-section fade-in">
-    <blockquote>
+  <section class="quote-section">
+    <div class="quote-bg parallax-bg-layer" id="quote-bg"></div>
+    <blockquote class="fade-in">
       <p>
         "In every walk with nature, one receives far more than he seeks."
       </p>
@@ -153,8 +159,9 @@
   </section>
 
   <!-- ─── CONTACT ──────────────────────────────────────────────── -->
-  <section id="contact" class="contact-section fade-in">
-    <div class="section-content">
+  <section id="contact" class="contact-section">
+    <div class="contact-bg parallax-bg-layer" id="contact-bg"></div>
+    <div class="section-content fade-in">
       <div class="label">Get in Touch</div>
       <h2>Start Your Adventure</h2>
       <p>Ready to explore the wild? Let's plan your journey together.</p>

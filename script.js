@@ -47,11 +47,11 @@
   });
 
   /* ══════════════════════════════════════════════════════════════
-     2. PARALLAX — multi-layer depth effect
+     2. PARALLAX — multi-layer depth effect (unified across all sections)
      ══════════════════════════════════════════════════════════════ */
 
   /**
-   * Each entry: { el, speed }
+   * Each entry: { el, speed, type }
    * speed > 0  → element moves slower than scroll (recedes / background)
    * speed < 0  → element moves faster (foreground)
    * speed = 0  → no movement
@@ -65,22 +65,35 @@
     { el: qs('#hero-mid'),     speed: 0.35  },
     { el: qs('#hero-fg'),      speed: 0.15  },
 
+    /* FOREST */
+    { el: qs('#forest-bg'),    speed: 0.50  },
+    { el: qs('#forest-mid'),   speed: 0.30  },
+    { el: qs('#forest-fg'),    speed: 0.12  },
+
     /* MOUNTAIN */
-    { el: qs('#mountain-bg'),  speed: 0.5   },
+    { el: qs('#mountain-bg'),  speed: 0.50  },
     { el: qs('#mountain-mid'), speed: 0.28  },
 
     /* OCEAN */
     { el: qs('#ocean-bg'),     speed: 0.45  },
+    { el: qs('#ocean-mid'),    speed: 0.25  },
+    { el: qs('#ocean-fg'),     speed: 0.10  },
 
     /* SPACE */
-    { el: qs('#space-bg'),     speed: 0.5   },
-    { el: qs('#space-nebula'), speed: 0.3   },
-    { el: qs('#space-planet'), speed: 0.2   },
+    { el: qs('#space-bg'),     speed: 0.50  },
+    { el: qs('#space-nebula'), speed: 0.30  },
+    { el: qs('#space-planet'), speed: 0.20  },
     { el: qs('#space-ring'),   speed: 0.15  },
-    { el: qs('#space-fg'),     speed: 0.1   },
+    { el: qs('#space-fg'),     speed: 0.10  },
 
-    /* FOREST card-bg */
-    { el: qs('.parallax-card-bg'), speed: 0.25 },
+    /* CARDS background */
+    { el: qs('#cards-bg'),     speed: 0.15  },
+
+    /* QUOTE background */
+    { el: qs('#quote-bg'),     speed: 0.12  },
+
+    /* CONTACT background */
+    { el: qs('#contact-bg'),   speed: 0.10  },
   ].filter(item => item.el); // guard against missing nodes
 
   // Smooth parallax using interpolation (lerp) so transforms don't jump.
@@ -371,7 +384,7 @@
       this.mouse.x = e.clientX - rect.left;
       this.mouse.y = e.clientY - rect.top;
     }
-    
+
     handleMouseLeave() {
         this.mouse.x = undefined;
         this.mouse.y = undefined;
