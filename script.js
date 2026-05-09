@@ -167,6 +167,22 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          // Trigger child animations
+          const fadeChildren = qsa('.fade-child', entry.target);
+          if (fadeChildren.length === 0) {
+            // If no explicit fade-child, animate direct text nodes
+            const children = entry.target.children;
+            [...children].forEach(child => {
+              if (!child.classList.contains('parallax-bg') && 
+                  !child.classList.contains('parallax-mid') && 
+                  !child.classList.contains('parallax-fg')) {
+                child.classList.add('fade-child');
+                child.style.opacity = '0';
+                child.style.transform = 'translateY(20px)';
+                child.style.animation = 'fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+              }
+            });
+          }
           fadeObserver.unobserve(entry.target);
         }
       });
@@ -217,7 +233,15 @@
      5. CARD TILT — subtle 3-D tilt on hover
      ══════════════════════════════════════════════════════════════ */
   qsa('.card[data-tilt]').forEach(card => {
+    let isHovered = false;
+    
+    card.addEventListener('mouseenter', () => {
+      isHovered = true;
+    });
+
     card.addEventListener('mousemove', (e) => {
+      if (!isHovered) return;
+      
       const rect = card.getBoundingClientRect();
       const cx   = rect.left + rect.width  / 2;
       const cy   = rect.top  + rect.height / 2;
@@ -225,17 +249,40 @@
       const dy   = (e.clientY - cy) / (rect.height / 2);
 
       card.style.transform = `
-        perspective(600px)
-        rotateX(${-dy * 7}deg)
-        rotateY(${dx  * 7}deg)
-        translateY(-8px)
+        perspective(1000px)
+        rotateX(${-dy * 8}deg)
+        rotateY(${dx * 8}deg)
+        translateZ(20px)
+        translateY(-12px)
+        scale(1.02)
       `;
     });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
+      isHovered = false;
+      card.style.transform = 'translateY(0) scale(1)';
     });
   });
+
+  /* ══════════════════════════════════════════════════════════════
+     5b. SCROLL-TRIGGERED ELEMENT ANIMATIONS
+     ══════════════════════════════════════════════════════════════ */
+  const scrollAnimEls = qsa('[data-scroll-animate]');
+  
+  const scrollAnimObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const animType = entry.target.dataset.scrollAnimate;
+          entry.target.style.animation = `${animType} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`;
+          scrollAnimObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  scrollAnimEls.forEach(el => scrollAnimObserver.observe(el));
 
   /* ══════════════════════════════════════════════════════════════
      6. CONTACT FORM — basic submission handler
@@ -295,8 +342,78 @@
   }));
 
   /* ══════════════════════════════════════════════════════════════
-     9. INTERACTIVE CONSTELLATIONS
+     8b. SCROLL PROGRESS INDICATOR
      ══════════════════════════════════════════════════════════════ */
+  const progressBar = document.createElement('div');
+  Object.assign(progressBar.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    height: '3px',
+    background: 'linear-gradient(90deg, #4ade80, #22d3ee)',
+    zIndex: '10000',
+    width: '0%',
+    transition: 'width 0.1s linear',
+  });
+  document.body.appendChild(progressBar);
+
+  window.addEventListener('scroll', rafThrottle(() => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / scrollHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+  }), { passive: true });
+
+  /* ══════════════════════════════════════════════════════════════
+     10. PARALLAX TEXT SCROLL EFFECT
+     ══════════════════════════════════════════════════════════════ */
+  const parallaxTexts = qsa('.section-title, .section-desc, .label');
+  
+  function updateParallaxText() {
+    const scrollY = window.scrollY;
+    parallaxTexts.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const elementCenter = rect.top + rect.height / 2;
+      const windowCenter = window.innerHeight / 2;
+      const distance = (elementCenter - windowCenter) / 100;
+      
+      // Subtle parallax effect on text
+      el.style.transform = `translateY(${distance * 3}px)`;
+    });
+  }
+  
+  window.addEventListener('scroll', rafThrottle(updateParallaxText), { passive: true });
+
+  /* ══════════════════════════════════════════════════════════════
+     11. ENHANCED BUTTON HOVER EFFECTS
+     ══════════════════════════════════════════════════════════════ */
+  qsa('.btn').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      btn.style.animation = 'pulse 0.6s ease-out';
+    });
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     12. SCROLL-BASED ELEMENT OPACITY & SCALE
+     ══════════════════════════════════════════════════════════════ */
+  const scaleEls = qsa('[data-scale-on-scroll]');
+  
+  function updateScaleElements() {
+    scaleEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const elementCenter = rect.top + rect.height / 2;
+      const windowCenter = window.innerHeight / 2;
+      const distance = Math.abs(elementCenter - windowCenter);
+      const maxDistance = window.innerHeight;
+      
+      const scale = Math.max(0.95, 1 - (distance / maxDistance) * 0.1);
+      const opacity = Math.max(0.7, 1 - (distance / maxDistance) * 0.4);
+      
+      el.style.transform = `scale(${scale})`;
+      el.style.opacity = opacity;
+    });
+  }
+  
+  window.addEventListener('scroll', rafThrottle(updateScaleElements), { passive: true });
   class Constellation {
     constructor(canvas, numStars = 100, color = 'rgba(255, 255, 255, 0.8)') {
       this.canvas = canvas;
