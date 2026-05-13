@@ -167,6 +167,22 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          // Trigger child animations
+          const fadeChildren = qsa('.fade-child', entry.target);
+          if (fadeChildren.length === 0) {
+            // If no explicit fade-child, animate direct text nodes
+            const children = entry.target.children;
+            [...children].forEach(child => {
+              if (!child.classList.contains('parallax-bg') && 
+                  !child.classList.contains('parallax-mid') && 
+                  !child.classList.contains('parallax-fg')) {
+                child.classList.add('fade-child');
+                child.style.opacity = '0';
+                child.style.transform = 'translateY(20px)';
+                child.style.animation = 'fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+              }
+            });
+          }
           fadeObserver.unobserve(entry.target);
         }
       });
@@ -217,7 +233,15 @@
      5. CARD TILT — subtle 3-D tilt on hover
      ══════════════════════════════════════════════════════════════ */
   qsa('.card[data-tilt]').forEach(card => {
+    let isHovered = false;
+    
+    card.addEventListener('mouseenter', () => {
+      isHovered = true;
+    });
+
     card.addEventListener('mousemove', (e) => {
+      if (!isHovered) return;
+      
       const rect = card.getBoundingClientRect();
       const cx   = rect.left + rect.width  / 2;
       const cy   = rect.top  + rect.height / 2;
@@ -225,17 +249,40 @@
       const dy   = (e.clientY - cy) / (rect.height / 2);
 
       card.style.transform = `
-        perspective(600px)
-        rotateX(${-dy * 7}deg)
-        rotateY(${dx  * 7}deg)
-        translateY(-8px)
+        perspective(1000px)
+        rotateX(${-dy * 8}deg)
+        rotateY(${dx * 8}deg)
+        translateZ(20px)
+        translateY(-12px)
+        scale(1.02)
       `;
     });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
+      isHovered = false;
+      card.style.transform = 'translateY(0) scale(1)';
     });
   });
+
+  /* ══════════════════════════════════════════════════════════════
+     5b. SCROLL-TRIGGERED ELEMENT ANIMATIONS
+     ══════════════════════════════════════════════════════════════ */
+  const scrollAnimEls = qsa('[data-scroll-animate]');
+  
+  const scrollAnimObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const animType = entry.target.dataset.scrollAnimate;
+          entry.target.style.animation = `${animType} 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards`;
+          scrollAnimObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  scrollAnimEls.forEach(el => scrollAnimObserver.observe(el));
 
   /* ══════════════════════════════════════════════════════════════
      6. CONTACT FORM — basic submission handler
@@ -295,8 +342,78 @@
   }));
 
   /* ══════════════════════════════════════════════════════════════
-     9. INTERACTIVE CONSTELLATIONS
+     8b. SCROLL PROGRESS INDICATOR
      ══════════════════════════════════════════════════════════════ */
+  const progressBar = document.createElement('div');
+  Object.assign(progressBar.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    height: '3px',
+    background: 'linear-gradient(90deg, #4ade80, #22d3ee)',
+    zIndex: '10000',
+    width: '0%',
+    transition: 'width 0.1s linear',
+  });
+  document.body.appendChild(progressBar);
+
+  window.addEventListener('scroll', rafThrottle(() => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / scrollHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+  }), { passive: true });
+
+  /* ══════════════════════════════════════════════════════════════
+     10. PARALLAX TEXT SCROLL EFFECT
+     ══════════════════════════════════════════════════════════════ */
+  const parallaxTexts = qsa('.section-title, .section-desc, .label');
+  
+  function updateParallaxText() {
+    const scrollY = window.scrollY;
+    parallaxTexts.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const elementCenter = rect.top + rect.height / 2;
+      const windowCenter = window.innerHeight / 2;
+      const distance = (elementCenter - windowCenter) / 100;
+      
+      // Subtle parallax effect on text
+      el.style.transform = `translateY(${distance * 3}px)`;
+    });
+  }
+  
+  window.addEventListener('scroll', rafThrottle(updateParallaxText), { passive: true });
+
+  /* ══════════════════════════════════════════════════════════════
+     11. ENHANCED BUTTON HOVER EFFECTS
+     ══════════════════════════════════════════════════════════════ */
+  qsa('.btn').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      btn.style.animation = 'pulse 0.6s ease-out';
+    });
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     12. SCROLL-BASED ELEMENT OPACITY & SCALE
+     ══════════════════════════════════════════════════════════════ */
+  const scaleEls = qsa('[data-scale-on-scroll]');
+  
+  function updateScaleElements() {
+    scaleEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const elementCenter = rect.top + rect.height / 2;
+      const windowCenter = window.innerHeight / 2;
+      const distance = Math.abs(elementCenter - windowCenter);
+      const maxDistance = window.innerHeight;
+      
+      const scale = Math.max(0.95, 1 - (distance / maxDistance) * 0.1);
+      const opacity = Math.max(0.7, 1 - (distance / maxDistance) * 0.4);
+      
+      el.style.transform = `scale(${scale})`;
+      el.style.opacity = opacity;
+    });
+  }
+  
+  window.addEventListener('scroll', rafThrottle(updateScaleElements), { passive: true });
   class Constellation {
     constructor(canvas, numStars = 100, color = 'rgba(255, 255, 255, 0.8)') {
       this.canvas = canvas;
@@ -404,4 +521,146 @@
     spaceCanvas.parentElement.addEventListener('mousemove', (e) => constellationSpace.handleMouseMove(e));
     spaceCanvas.parentElement.addEventListener('mouseleave', () => constellationSpace.handleMouseLeave());
   }
-})();
+  /* ══════════════════════════════════════════════════════════════
+     CHAOS MODE — THE ULTIMATE FEATURE!
+     ══════════════════════════════════════════════════════════════ */
+  const chaosToggle = qs('#chaos-toggle');
+  let chaosMode = false;
+  let particleInterval = null;
+
+  // Chaos mode toggle
+  chaosToggle.addEventListener('click', () => {
+    chaosMode = !chaosMode;
+    document.body.classList.toggle('chaos-mode', chaosMode);
+    chaosToggle.classList.toggle('active', chaosMode);
+
+    if (chaosMode) {
+      startChaosParticles();
+      console.log('🎆 CHAOS MODE ACTIVATED! 🎆');
+    } else {
+      stopChaosParticles();
+      qsa('.chaos-particle').forEach(p => p.remove());
+      console.log('☮️ Chaos mode deactivated. Peace restored.');
+    }
+  });
+
+  // Particle system for chaos mode
+  function createChaosParticle() {
+    const particle = document.createElement('div');
+    particle.className = 'chaos-particle';
+    
+    const size = Math.random() * 10 + 5;
+    const colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff6600', '#00ff00', '#ff0099'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    
+    particle.style.cssText = `
+      width: ${size}px;
+      height: ${size}px;
+      left: ${Math.random() * window.innerWidth}px;
+      top: ${Math.random() * window.innerHeight}px;
+      background: ${color};
+      border-radius: 50%;
+      box-shadow: 0 0 ${size}px ${color};
+      opacity: ${Math.random() * 0.7 + 0.3};
+    `;
+    
+    document.body.appendChild(particle);
+    
+    // Animate particle
+    const vx = (Math.random() - 0.5) * 4;
+    const vy = (Math.random() - 0.5) * 4 - 2;
+    let x = parseFloat(particle.style.left);
+    let y = parseFloat(particle.style.top);
+    let opacity = parseFloat(particle.style.opacity);
+    
+    const animateParticle = () => {
+      x += vx;
+      y += vy;
+      opacity -= 0.02;
+      
+      particle.style.left = x + 'px';
+      particle.style.top = y + 'px';
+      particle.style.opacity = Math.max(0, opacity);
+      
+      if (opacity > 0) {
+        requestAnimationFrame(animateParticle);
+      } else {
+        particle.remove();
+      }
+    };
+    
+    animateParticle();
+  }
+
+  function startChaosParticles() {
+    particleInterval = setInterval(() => {
+      if (chaosMode) {
+        for (let i = 0; i < 3; i++) {
+          createChaosParticle();
+        }
+      }
+    }, 100);
+  }
+
+  function stopChaosParticles() {
+    if (particleInterval) {
+      clearInterval(particleInterval);
+      particleInterval = null;
+    }
+  }
+
+  // Chaos keyboard shortcut: Press 'C' twice
+  let chaosKeyPresses = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'c') {
+      chaosKeyPresses++;
+      if (chaosKeyPresses >= 2) {
+        chaosToggle.click();
+        chaosKeyPresses = 0;
+      }
+      setTimeout(() => { chaosKeyPresses = 0; }, 500);
+    }
+  });
+
+  // Mouse-following chaos effect when in chaos mode
+  document.addEventListener('mousemove', (e) => {
+    if (chaosMode && Math.random() < 0.1) {
+      const particle = document.createElement('div');
+      particle.className = 'chaos-particle';
+      const size = Math.random() * 5 + 2;
+      const colors = ['#ff00ff', '#00ffff', '#ffff00'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      particle.style.cssText = `
+        width: ${size}px;
+        height: ${size}px;
+        left: ${e.clientX}px;
+        top: ${e.clientY}px;
+        background: ${color};
+        border-radius: 50%;
+        box-shadow: 0 0 ${size * 2}px ${color};
+        opacity: 0.8;
+      `;
+      
+      document.body.appendChild(particle);
+      
+      setTimeout(() => {
+        particle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${Math.random() * 100 - 50}px)`;
+        particle.style.opacity = '0';
+        particle.style.transition = 'all 0.5s ease-out';
+      }, 10);
+      
+      setTimeout(() => particle.remove(), 550);
+    }
+  });
+
+  // Chaos mode easter egg: Random page distortions
+  setInterval(() => {
+    if (chaosMode && Math.random() < 0.05) {
+      const degree = Math.random() * 2 - 1;
+      document.body.style.transform = `perspective(1000px) rotateY(${degree}deg) rotateX(${degree * 0.5}deg)`;
+      setTimeout(() => {
+        document.body.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)';
+      }, 100);
+    }
+  }, 500);})();
